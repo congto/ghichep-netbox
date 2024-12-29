@@ -41,12 +41,28 @@ def netbox_connection_check(netboxurl, netboxtoken):
         print(f"Error: An unknown error occurred. More: {e}")
     return None
 
-def get_rack():
+def nb_rack_get():
     rackname = nb.dcim.racks.get(173)
     print(rackname)
-    devices = nb.dcim.devices.filter(status='planned')
-    for device in devices: 
-        print(dict(device))
+
+def nb_rack_jounral():
+    rackname = nb.extras.journal_entries.create(
+        {
+            "assigned_object_type": "dcim.rack",
+            "assigned_object_id": 53,
+            "kind": "info",
+            "comments": "demo demo ttttttttttt",        
+        }
+    )
+
+    journal_entry = {
+        "assigned_object_type": "dcim.rack",
+        "assigned_object_id": 53,
+        "kind": "info",
+        "comments": "This is a journal entry for the rack.",
+    }
+
+    created_journal_entry = nb.extras.journal_entries.create(journal_entry)
 
 def main():
     try:
@@ -54,7 +70,9 @@ def main():
         netbox_connection_check(NetBox_URL, NetBox_Token)
 
         print("Step 2: Get rack...")
-        get_rack()
+        nb_rack_get()
+        nb_rack_jounral()
+        
     except Exception as e:
         print(f"Error during execution: {e}")
 
